@@ -1,0 +1,86 @@
+---
+title       : MLR model for estimating fuel consumption for automobile (data set "mtcars") 
+subtitle    : Development Data Products - Course Project
+author      : Natalia Smirnova
+job         : 
+framework   : io2012        # {io2012, html5slides, shower, dzslides, ...}
+highlighter : highlight.js  # {highlight.js, prettify, highlight}
+hitheme     : tomorrow      # 
+widgets     : [quiz, bootstrap,interactive,mathjax]        # {mathjax, quiz, bootstrap}
+ext_widgets : {rCharts: [libraries/nvd3,libraries/leaflet,libraries/polycharts]}
+mode        : selfcontained # {standalone, draft}
+knit        : slidify::knit2slides
+---
+
+## Let us explore data set structure
+
+The description of the data set variables can be found [here](https://stat.ethz.ch/R-manual/R-devel/library/datasets/html/mtcars.html).
+
+```{r,echo=FALSE}
+data(mtcars)
+str(mtcars)
+```
+
+--- .class #id 
+
+## Let us establish relationship between variables 
+
+We have chosen several regressors for predictive purposes.
+
+Fuel consumption against type of transmission (am: "automatic" or "manual"), weight (wt) and number of cylinders (cyl)
+
+```{r,echo=FALSE,results = 'asis'}
+
+require(rCharts)
+data_cars = as.data.frame(mtcars)
+data_cars$cyl<-as.factor(data_cars$cyl)
+data_cars[data_cars$am==0,"am"]="automatic"
+data_cars[data_cars$am==1,"am"]="manual"
+rPlot(mpg ~ wt|am, color = 'cyl',data=data_cars, type ='point')
+
+```
+
+
+--- .class #id 
+
+## Multilinear regression model 
+
+Let us fit multilinear regression model for estimating fuel consumption based on the information about weight of an automobile, type of transmission and number of cylinders: 
+
+```{r,echo=TRUE}
+
+fit<-lm(mpg~as.factor(as.character(am))+wt+cyl,mtcars)
+```
+
+Coefficients of the estimated regression equation: 
+
+```{r,echo=FALSE}
+
+fit$coefficients
+```
+
+Regression equation: $$\hat Y = 39.4179334 +  0.1764932 am (0 or 1) +  (-3.1251422 ) wt + (-1.5102457) cyl$$
+
+Use [calculator](https://nataliasmirnova.shinyapps.io/Shiny) to estimate fuel consumption with the help of presented MLR model. 
+
+
+--- &radio 
+
+## Brainstorming :-)
+
+Based on the information from the previous slides is it possible to define a best set of variables to be good predictors for calculating the fuel consumption?
+
+1. The best predictor -  is color of an automobile (even though it wasn't mentioned)
+2. _It is reasonable to construct several models and choose the best one using regression analysis_
+3. Who knows...
+
+
+*** .hint
+It would be helpful to take "Regression models" course to get some ideas
+
+*** .explanation
+Exploratory graphs and matrix of correlation can only give information that there is (or there is no) dependence (correlation) between variables. But we can not make any conclusion without constructing different regression models and evaluating them using regression analysis.
+
+
+
+
